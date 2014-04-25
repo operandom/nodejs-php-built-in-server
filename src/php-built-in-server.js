@@ -35,13 +35,46 @@ function config() {
 
 	util.inherits(PHPServer, EventEmitter);
 
-	d('phpExecPath', 'php');
 	d('routerFilePath', undefined);
 	d('iniFilePath', undefined);
 
-	d('root', process.cwd());
-	d('address', '0.0.0.0');
-	d('port', 0);
+	d('defaultPhpExecPath', 'php');
+	d('defaultRoot', process.cwd());
+	d('defaultAddress', '0.0.0.0');
+	d('defaultPort', 0);
+	
+	dgs('phpExecPath',
+		function () {
+			return this.explicitPhpExecPath || this.defaultPhpExecPath || this.constructor.prototype.defaultPhpExecPath;
+		},
+		function (value) {
+			this.explicitPhpExecPath = value;
+		}
+	);
+	dgs('root',
+		function () {
+			return this.explicitRoot || this.defaultRoot || this.contructor.prototype.defaultRoot;
+		},
+		function (value) {
+			this.explicitRoot = value;
+		}
+	);
+	dgs('address',
+		function () {
+			return this.explicitAddress || this.defaultAddress || this.constructor.prototype.defaultAddress;
+		},
+		function (value) {
+			this.explicitAddress = value;
+		}
+	);
+	dgs('port',
+		function () {
+			return this.explicitPort || this.defaultPort || this.constructor.prototype.defaultPort;
+		},
+		function (value) {
+			this.explicitPort = value;
+		}
+	);
 
 	d('getProcessParameters', getProcessParameters);
 	d('getProcessOptions', getProcessOptions);
@@ -109,7 +142,7 @@ function launchProcess() {
 		);
 
 		this.process.on('close', function (code) {
-			emit('close', emitter, this, {code: code });
+			emit('close', emitter, this, {code: code});
 		});
 
 		this.process.on('error', function (error) {
@@ -127,7 +160,7 @@ function launchProcess() {
 		this.process.stderr.on('data', function (data) {
 			emit('error', emitter, this, {error: data});
 		});
-		
+
 		emit('listening', emitter, this, {
 			host: {
 				address: get(this, 'address'),
@@ -136,7 +169,7 @@ function launchProcess() {
 		});
 
 	} catch (error) {
-		
+
 		emit('error', emitter, this, {error: error});
 
 	}
@@ -210,6 +243,16 @@ function d(name, value) {
 }
 
 
+function dgs(name, getter, setter) {
+	Object.defineProperty(PHPServer.prototype, name, {
+		configurable: true,
+		enumerable: true,
+		get: getter,
+		set: setter
+	});
+}
+
+
 function findFreePortHandler(error, port) {
 
 	if (error) {
@@ -238,11 +281,11 @@ function get(target, name) {
 
 
 function emit(type, emitter, target, eventObject) {
-	
+
 	eventObject.type = type;
 	eventObject.emitter = emitter;
 	eventObject.target = target;
-	
+
 	emitter.emit(type, eventObject);
-	
+
 }
