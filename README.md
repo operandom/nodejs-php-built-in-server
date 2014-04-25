@@ -57,3 +57,9 @@ server.on('error', function (event) {
 server.listen('web', '127.0.0.1', 8000, '/path/to/router.php');
 
 ```
+
+
+Licence
+-------
+
+Copyright (c) 2013 Valéry Herlaud. Licensed under the MIT license. See the file LICENSE.md in this distribution for more details.
