@@ -3,10 +3,8 @@
 var util = require('util'),
 	path = require('path'),
 	EventEmitter = require('events').EventEmitter,
-
 	net = require('net'),
 	spawn = require('child_process').spawn
-
 	;
 
 module.exports = (function () {
@@ -22,8 +20,10 @@ module.exports = (function () {
 
 
 function PHPServer(phpExecPath, iniFilePath) {
+
 	this.phpExecPath = phpExecPath;
 	this.iniFilePath = iniFilePath;
+
 }
 
 
@@ -51,6 +51,7 @@ function config() {
 	d('listen', listen);
 	d('close', closeConnection);
 	d('launchProcess', launchProcess);
+
 }
 
 
@@ -71,6 +72,7 @@ function listen(root, port, address, routerFilePath) {
 	} else {
 		findFreePort(findFreePortHandler.bind(this));
 	}
+
 }
 
 
@@ -86,6 +88,7 @@ function closeConnection() {
 
 		this.process = undefined;
 	}
+
 }
 
 
@@ -106,48 +109,26 @@ function launchProcess() {
 		);
 
 		this.process.on('close', function (code) {
-			emitter.emit('close', {
-				target: this,
-				emitter: emitter,
-				code: code
-			});
+			emit('close', emitter, this, {code: code });
 		});
 
 		this.process.on('error', function (error) {
-			emitter.emit('error', {
-				target: this,
-				emitter: emitter,
-				error: error
-			});
+			emit('error', emitter, this, {error: error});
 		});
 
 		this.process.stdin.on('data', function (data) {
-			emitter.emit('data', {
-				target: this,
-				emitter: emitter,
-				data: data
-			});
+			emit('data', emitter, this, {data: data});
 		});
 
 		this.process.stdout.on('data', function (data) {
-			emitter.emit('data', {
-				target: this,
-				emitter: emitter,
-				data: data
-			});
+			emit('data', emitter, this, {data: data});
 		});
 
 		this.process.stderr.on('data', function (data) {
-			emitter.emit('error', {
-				target: this,
-				emitter: emitter,
-				error: data
-			});
+			emit('error', emitter, this, {error: data});
 		});
-
-		this.emit('listening', {
-			target: emitter,
-			emitter: emitter,
+		
+		emit('listening', emitter, this, {
 			host: {
 				address: get(this, 'address'),
 				port: this.port
@@ -155,15 +136,10 @@ function launchProcess() {
 		});
 
 	} catch (error) {
-
-		this.emit('error', {
-			target: this,
-			type: 'catch',
-			error: error
-		});
+		
+		emit('error', emitter, this, {error: error});
 
 	}
-
 
 }
 
@@ -181,16 +157,19 @@ function getProcessParameters() {
 	}
 
 	return a;
+
 }
 
 
 function getProcessOptions() {
+
 	return {
 		cwd: path.resolve(get(this, 'root')),
 		env: process.env,
 		detached: false,
 		stdio: ['pipe', 'pipe', 'pipe']
 	};
+
 }
 
 
@@ -211,6 +190,7 @@ function findFreePort(callback) {
 	});
 
 	server.listen(0);
+
 }
 
 
@@ -226,24 +206,43 @@ function d(name, value) {
 		enumerable: true,
 		configurable: true
 	});
+
 }
 
 
 function findFreePortHandler(error, port) {
+
 	if (error) {
 		this.emit('error', error);
 	} else {
 		this.port = port;
 		this.launchProcess();
 	}
+
 }
 
 
 function disposeSocket(socket) {
+
 	socket.removeAllListeners();
 	socket.destroy();
+
 }
 
+
 function get(target, name) {
+
 	return target[name] || target.constructor.prototype[name];
+
+}
+
+
+function emit(type, emitter, target, eventObject) {
+	
+	eventObject.type = type;
+	eventObject.emitter = emitter;
+	eventObject.target = target;
+	
+	emitter.emit(type, eventObject);
+	
 }
