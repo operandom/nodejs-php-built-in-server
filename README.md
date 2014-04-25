@@ -38,8 +38,6 @@ server.on('error', function (event) {
 	console.log('[ERROR]', event.error.toString());
 });
 
-server.on('error'
-
 server.listen();
 ```
 
