@@ -58,6 +58,22 @@ server.listen('web', '127.0.0.1', 8000, '/path/to/router.php');
 
 ```
 
+Show "examples" folder.
+
+
+TODO
+----
+
+* implement php -d foo[=bar]
+
+
+Known issues
+------------
+
+* No data is receive from the child process to confirm explicitly that the server is listening.
+* The stderr of the child process logs all queries, not just errors.
+* Add to this, the stream has some strange behaviors with Symfony2.
+
 
 Licence
 -------
