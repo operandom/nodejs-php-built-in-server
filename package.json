@@ -1,0 +1,32 @@
+{
+	"name": "php-built-in-server",
+	"version": "0.1.0",
+	"description": "A tool to manage PHP built-in servers",
+	"main": "src/php-built-in-server.js",
+	"homepage": "https://github.com/operandom/nodejs-php-built-in-server.git",
+	"bugs": "https://github.com/operandom/nodejs-php-built-in-server/issues",
+	"keywords": [
+		"php",
+		"server",
+		"built-in"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/operandom/nodejs-php-built-in-server.git"
+	},
+	"scripts": {
+		"test": "grunt"
+	},'
+	"dependencies": {},
+	"devDependencies": {
+		"grunt": "^0.4.4",
+		"grunt-contrib-jshint": "^0.10.0",
+		"matchdep": "^0.3.0"
+	},
+	"author": {
+		"name": "Valéry Herlaud",
+		"email": "contact@operandom.com",
+		"url": "https://operandom.com"
+	},
+	"license": "MIT"
+}
