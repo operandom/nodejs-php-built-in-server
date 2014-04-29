@@ -7,7 +7,7 @@ A node.js tool to launch [PHP built-in servers](http://php.net/manual/en/feature
 Requirements
 ------------
 
-* php >= 5.4.0 on your system.
+* php **>= 5.4.0** on your system.
 
 
 Installation
@@ -54,7 +54,12 @@ server.on('error', function (event) {
 	console.log('[ERROR]', event.error.toString());
 });
 
-server.listen('web', '127.0.0.1', 8000, '/path/to/router.php');
+// pathes can be absolute or relatives
+server.listen( 'path/to/webRoot', '127.0.0.1', 8000, '/path/to/router.php', {
+		max_execution_time: 60,
+		error_log: '/path/to/file', // path here is send to php as is
+		// etc.
+});
 
 ```
 
@@ -64,15 +69,17 @@ Show "examples" folder.
 TODO
 ----
 
-* implement php -d foo[=bar]
+*	find solution for partial buffering of stderr:<br>
+	`fwrite(fopen('php://stdin', 'r'), 'test');` is immediatly receive from PHP but stderr datas coming from server himself is buffured.<br>
+	If someone knows how to fix this...
 
 
 Known issues
 ------------
 
-* No data is receive from the child process to confirm explicitly that the server is listening.
-* The stderr of the child process logs all queries, not just errors.
-* Add to this, the stream has some strange behaviors with Symfony2.
+*	No data is received from the child process to confirm explicitly that the server is listening.
+*	The stderr of the child process logs all queries, not just errors.
+*	The stderr seems buffered (show TODO).
 
 
 Licence
