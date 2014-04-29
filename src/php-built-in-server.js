@@ -92,12 +92,13 @@ function config() {
 /* API */
 
 
-function listen(root, port, address, routerFilePath) {
+function listen(root, port, address, routerFilePath, iniDirectives) {
 
 	this.root = root;
 	this.address = address;
 	this.port = port;
 	this.routerFilePath = routerFilePath;
+	this.iniDirectives = iniDirectives;
 
 
 	if (this.port) {
@@ -187,6 +188,12 @@ function getProcessParameters() {
 
 	if (this.iniFilePath) {
 		a.push('-c', path.resolve(this.iniFilePath));
+	}
+	
+	if (this.iniDirectives) {
+		for (var key in this.iniDirectives) {
+			a.push('-d', key + '=' + this.iniDirectives[key]);
+		}
 	}
 
 	return a;
