@@ -70,7 +70,7 @@ TODO
 ----
 
 *	find solution for partial buffering of stderr:<br>
-	`fwrite(fopen('php://stdin', 'r'), 'test');` is immediatly receive from PHP but stderr datas coming from server himself is buffured.<br>
+	`fwrite(fopen('php://stderr', 'w'), 'test');` is immediatly receive from PHP but stderr datas coming from server himself is buffured.<br>
 	If someone knows how to fix this...
 
 
