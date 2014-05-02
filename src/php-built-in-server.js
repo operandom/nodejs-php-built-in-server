@@ -185,15 +185,15 @@ function getProcessParameters() {
 	if (this.routerFilePath) {
 		a.push(path.resolve(this.routerFilePath));
 	}
-
-	if (this.iniFilePath) {
-		a.push('-c', path.resolve(this.iniFilePath));
-	}
 	
 	if (this.iniDirectives) {
 		for (var key in this.iniDirectives) {
-			a.push('-d', key + '=' + this.iniDirectives[key]);
+			a.splice(0, 0, '-d', key + '=' + this.iniDirectives[key]);
 		}
+	}
+
+	if (this.iniFilePath) {
+		a.splice(0, 0, '-c', path.resolve(this.iniFilePath));
 	}
 
 	return a;
